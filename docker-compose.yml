@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      PORT: 5000
+      CINEBOOK_DATA_DIR: /app/data
+      CINEBOOK_AUTH_SECRET: ${CINEBOOK_AUTH_SECRET:-local-development-only-change-this-secret}
+      TICKET_SECRET: ${TICKET_SECRET:-local-development-ticket-secret-change-this}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@cinebook.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-this-admin-password}
+    ports:
+      - "5000:5000"
+    volumes:
+      - cinebook-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:5000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000/api}
+    ports:
+      - "4173:4173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  cinebook-data:

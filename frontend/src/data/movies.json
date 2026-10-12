@@ -1,0 +1,258 @@
+[
+  {
+    "id": "interstellar",
+    "title": "Interstellar",
+    "genre": "Sci-Fi · Adventure",
+    "language": "English",
+    "duration": "2h 49m",
+    "certificate": "UA",
+    "rating": 8.7,
+    "synopsis": "A team of explorers travels beyond this galaxy to discover whether mankind has a future among the stars.",
+    "cast": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
+    "accent": "#c28c54",
+    "showtimes": [
+      { "id": "interstellar-delhi-pvr-1015", "city": "Delhi", "cinema": "PVR Select Citywalk", "screen": "Audi 4 · IMAX", "time": "10:15 AM", "date": "Today", "price": 320 },
+      { "id": "interstellar-delhi-inox-1430", "city": "Delhi", "cinema": "INOX Nehru Place", "screen": "Screen 2", "time": "2:30 PM", "date": "Today", "price": 280 },
+      { "id": "interstellar-mumbai-pvr-1900", "city": "Mumbai", "cinema": "PVR Juhu", "screen": "Audi 1 · IMAX", "time": "7:00 PM", "date": "Today", "price": 420 },
+      { "id": "interstellar-bengaluru-inox-1130", "city": "Bengaluru", "cinema": "INOX Garuda Mall", "screen": "Screen 5", "time": "11:30 AM", "date": "Tomorrow", "price": 300 }
+    ]
+  },
+  {
+    "id": "inception",
+    "title": "Inception",
+    "genre": "Sci-Fi · Thriller",
+    "language": "English",
+    "duration": "2h 28m",
+    "certificate": "UA",
+    "rating": 8.8,
+    "synopsis": "A skilled thief who steals secrets through dream-sharing technology is offered a chance to have his criminal record erased.",
+    "cast": ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"],
+    "accent": "#d35f45",
+    "showtimes": [
+      { "id": "inception-delhi-pvr-1215", "city": "Delhi", "cinema": "PVR Pacific Mall", "screen": "Screen 3", "time": "12:15 PM", "date": "Today", "price": 260 },
+      { "id": "inception-delhi-cine-1815", "city": "Delhi", "cinema": "Cinepolis Janak Place", "screen": "Audi 2", "time": "6:15 PM", "date": "Today", "price": 340 },
+      { "id": "inception-chennai-inox-2010", "city": "Chennai", "cinema": "INOX Citi Centre", "screen": "Screen 1", "time": "8:10 PM", "date": "Tomorrow", "price": 310 }
+    ]
+  },
+  {
+    "id": "the-batman",
+    "title": "The Batman",
+    "genre": "Action · Crime",
+    "language": "English",
+    "duration": "2h 56m",
+    "certificate": "UA",
+    "rating": 7.8,
+    "synopsis": "Batman ventures into Gotham City's underworld when a sadistic killer leaves behind a trail of cryptic clues.",
+    "cast": ["Robert Pattinson", "Zoë Kravitz", "Paul Dano"],
+    "accent": "#8a2538",
+    "showtimes": [
+      { "id": "batman-delhi-inox-1045", "city": "Delhi", "cinema": "INOX Vasant Kunj", "screen": "Screen 6", "time": "10:45 AM", "date": "Today", "price": 290 },
+      { "id": "batman-mumbai-cine-1600", "city": "Mumbai", "cinema": "Cinepolis Andheri", "screen": "Audi 4", "time": "4:00 PM", "date": "Today", "price": 360 },
+      { "id": "batman-hyderabad-pvr-2115", "city": "Hyderabad", "cinema": "PVR Inorbit", "screen": "Screen 7", "time": "9:15 PM", "date": "Tomorrow", "price": 390 }
+    ]
+  },
+  {
+    "id": "dune-part-two",
+    "title": "Dune: Part Two",
+    "genre": "Sci-Fi · Drama",
+    "language": "English",
+    "duration": "2h 46m",
+    "certificate": "UA",
+    "rating": 8.6,
+    "synopsis": "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
+    "cast": ["Timothée Chalamet", "Zendaya", "Rebecca Ferguson"],
+    "accent": "#d99346",
+    "showtimes": [
+      { "id": "dune-delhi-pvr-1330", "city": "Delhi", "cinema": "PVR Ambience Mall", "screen": "Audi 1 · 4DX", "time": "1:30 PM", "date": "Today", "price": 440 },
+      { "id": "dune-pune-inox-1715", "city": "Pune", "cinema": "INOX Bund Garden", "screen": "Screen 4", "time": "5:15 PM", "date": "Today", "price": 320 },
+      { "id": "dune-mumbai-pvr-2030", "city": "Mumbai", "cinema": "PVR Phoenix", "screen": "Audi 3 · IMAX", "time": "8:30 PM", "date": "Tomorrow", "price": 490 }
+    ]
+  },
+  {
+    "id": "avatar-way-of-water",
+    "title": "Avatar: The Way of Water",
+    "genre": "Fantasy · Adventure",
+    "language": "English",
+    "duration": "3h 12m",
+    "certificate": "UA",
+    "rating": 8.5,
+    "synopsis": "Jake Sully and Neytiri protect their family and find refuge with the ocean-dwelling Metkayina clan on Pandora.",
+    "cast": ["Sam Worthington", "Zoe Saldaña", "Sigourney Weaver"],
+    "accent": "#31a9b6",
+    "showtimes": [
+      { "id": "avatar-delhi-cine-1145", "city": "Delhi", "cinema": "Cinepolis DLF Avenue", "screen": "IMAX · 3D", "time": "11:45 AM", "date": "Today", "price": 460 },
+      { "id": "avatar-bengaluru-pvr-1530", "city": "Bengaluru", "cinema": "PVR Orion Mall", "screen": "Audi 6 · 3D", "time": "3:30 PM", "date": "Today", "price": 420 },
+      { "id": "avatar-hyderabad-inox-1945", "city": "Hyderabad", "cinema": "INOX GVK One", "screen": "Screen 2 · 3D", "time": "7:45 PM", "date": "Tomorrow", "price": 390 }
+    ]
+  },
+  {
+    "id": "jawan",
+    "title": "Jawan",
+    "genre": "Action · Thriller",
+    "language": "Hindi",
+    "duration": "2h 49m",
+    "certificate": "UA",
+    "rating": 8.1,
+    "synopsis": "A man driven by a personal vendetta recruits a team to correct wrongs in society and confront an old enemy.",
+    "cast": ["Shah Rukh Khan", "Nayanthara", "Vijay Sethupathi"],
+    "accent": "#d04a42",
+    "showtimes": [
+      { "id": "jawan-delhi-pvr-1400", "city": "Delhi", "cinema": "PVR Rivoli", "screen": "Screen 2", "time": "2:00 PM", "date": "Today", "price": 250 },
+      { "id": "jawan-mumbai-inox-1830", "city": "Mumbai", "cinema": "INOX R-City", "screen": "Screen 5", "time": "6:30 PM", "date": "Today", "price": 320 },
+      { "id": "jawan-chennai-cine-2110", "city": "Chennai", "cinema": "Cinepolis BSR Mall", "screen": "Audi 1", "time": "9:10 PM", "date": "Tomorrow", "price": 290 }
+    ]
+  },
+  {
+    "id": "rrr",
+    "title": "RRR",
+    "genre": "Action · Drama",
+    "language": "Telugu",
+    "duration": "3h 7m",
+    "certificate": "UA",
+    "rating": 8.0,
+    "synopsis": "A fictional tale of two legendary revolutionaries and their journey far away from home before they began fighting for their country.",
+    "cast": ["N. T. Rama Rao Jr.", "Ram Charan", "Alia Bhatt"],
+    "accent": "#c56a36",
+    "showtimes": [
+      { "id": "rrr-hyderabad-pvr-1200", "city": "Hyderabad", "cinema": "PVR Next Galleria", "screen": "Screen 4", "time": "12:00 PM", "date": "Today", "price": 280 },
+      { "id": "rrr-bengaluru-inox-1700", "city": "Bengaluru", "cinema": "INOX Lido", "screen": "Screen 1", "time": "5:00 PM", "date": "Today", "price": 300 },
+      { "id": "rrr-chennai-pvr-2030", "city": "Chennai", "cinema": "PVR Ampa Skywalk", "screen": "Audi 3", "time": "8:30 PM", "date": "Tomorrow", "price": 320 }
+    ]
+  },
+  {
+    "id": "spider-verse",
+    "title": "Spider-Man: Across the Spider-Verse",
+    "genre": "Animation · Adventure",
+    "language": "English",
+    "duration": "2h 20m",
+    "certificate": "U",
+    "rating": 8.7,
+    "synopsis": "Miles Morales journeys across the multiverse and meets a team of Spider-People protecting its very existence.",
+    "cast": ["Shameik Moore", "Hailee Steinfeld", "Oscar Isaac"],
+    "accent": "#8055b8",
+    "showtimes": [
+      { "id": "spider-delhi-inox-1115", "city": "Delhi", "cinema": "INOX Nehru Place", "screen": "Screen 3", "time": "11:15 AM", "date": "Tomorrow", "price": 240 },
+      { "id": "spider-pune-pvr-1500", "city": "Pune", "cinema": "PVR Pavilion Mall", "screen": "Screen 6", "time": "3:00 PM", "date": "Today", "price": 280 },
+      { "id": "spider-mumbai-cine-1845", "city": "Mumbai", "cinema": "Cinepolis Seawoods", "screen": "Audi 5", "time": "6:45 PM", "date": "Tomorrow", "price": 310 }
+    ]
+  },
+  {
+    "id": "arrival",
+    "title": "Arrival",
+    "genre": "Sci-Fi · Drama",
+    "language": "English",
+    "duration": "1h 56m",
+    "certificate": "UA",
+    "rating": 7.9,
+    "synopsis": "A linguist works to communicate with visitors from beyond Earth as the world tries to understand their arrival.",
+    "cast": ["Amy Adams", "Jeremy Renner", "Forest Whitaker"],
+    "accent": "#5ca6a3",
+    "showtimes": [
+      { "id": "arrival-delhi-pvr-1030", "city": "Delhi", "cinema": "PVR Saket", "screen": "Screen 2", "time": "10:30 AM", "date": "Today", "price": 240 },
+      { "id": "arrival-pune-inox-1645", "city": "Pune", "cinema": "INOX Bund Garden", "screen": "Screen 3", "time": "4:45 PM", "date": "Today", "price": 270 },
+      { "id": "arrival-chennai-cine-1930", "city": "Chennai", "cinema": "Cinepolis BSR Mall", "screen": "Audi 2", "time": "7:30 PM", "date": "Tomorrow", "price": 280 }
+    ]
+  },
+  {
+    "id": "parasite",
+    "title": "Parasite",
+    "genre": "Thriller · Drama",
+    "language": "Korean",
+    "duration": "2h 12m",
+    "certificate": "A",
+    "rating": 8.5,
+    "synopsis": "A cash-strapped family finds an unexpected path into the lives of a wealthy household, setting a tense chain of events in motion.",
+    "cast": ["Song Kang-ho", "Lee Sun-kyun", "Cho Yeo-jeong"],
+    "accent": "#789c70",
+    "showtimes": [
+      { "id": "parasite-delhi-inox-1400", "city": "Delhi", "cinema": "INOX Nehru Place", "screen": "Screen 5", "time": "2:00 PM", "date": "Today", "price": 260 },
+      { "id": "parasite-mumbai-pvr-1820", "city": "Mumbai", "cinema": "PVR Juhu", "screen": "Screen 6", "time": "6:20 PM", "date": "Today", "price": 310 },
+      { "id": "parasite-bengaluru-cine-2115", "city": "Bengaluru", "cinema": "Cinepolis Whitefield", "screen": "Audi 3", "time": "9:15 PM", "date": "Tomorrow", "price": 290 }
+    ]
+  },
+  {
+    "id": "la-la-land",
+    "title": "La La Land",
+    "genre": "Romance · Drama",
+    "language": "English",
+    "duration": "2h 8m",
+    "certificate": "UA",
+    "rating": 8.0,
+    "synopsis": "An aspiring actor and a jazz musician meet in Los Angeles and encourage each other to pursue their dreams.",
+    "cast": ["Ryan Gosling", "Emma Stone", "John Legend"],
+    "accent": "#cc6e77",
+    "showtimes": [
+      { "id": "lalaland-delhi-pvr-1210", "city": "Delhi", "cinema": "PVR Rivoli", "screen": "Screen 1", "time": "12:10 PM", "date": "Today", "price": 250 },
+      { "id": "lalaland-chennai-inox-1740", "city": "Chennai", "cinema": "INOX Citi Centre", "screen": "Screen 4", "time": "5:40 PM", "date": "Today", "price": 280 },
+      { "id": "lalaland-pune-pvr-2020", "city": "Pune", "cinema": "PVR Pavilion Mall", "screen": "Screen 2", "time": "8:20 PM", "date": "Tomorrow", "price": 300 }
+    ]
+  },
+  {
+    "id": "coco",
+    "title": "Coco",
+    "genre": "Animation · Family",
+    "language": "English",
+    "duration": "1h 45m",
+    "certificate": "U",
+    "rating": 8.4,
+    "synopsis": "A music-loving boy enters a vibrant land of ancestors and discovers the stories that connect his family.",
+    "cast": ["Anthony Gonzalez", "Gael García Bernal", "Benjamin Bratt"],
+    "accent": "#d04c52",
+    "showtimes": [
+      { "id": "coco-delhi-cine-1100", "city": "Delhi", "cinema": "Cinepolis DLF Avenue", "screen": "Screen 7", "time": "11:00 AM", "date": "Today", "price": 230 },
+      { "id": "coco-hyderabad-inox-1510", "city": "Hyderabad", "cinema": "INOX GVK One", "screen": "Screen 2", "time": "3:10 PM", "date": "Today", "price": 260 },
+      { "id": "coco-mumbai-pvr-1840", "city": "Mumbai", "cinema": "PVR Phoenix", "screen": "Screen 8", "time": "6:40 PM", "date": "Tomorrow", "price": 280 }
+    ]
+  },
+  {
+    "id": "top-gun-maverick",
+    "title": "Top Gun: Maverick",
+    "genre": "Action · Adventure",
+    "language": "English",
+    "duration": "2h 11m",
+    "certificate": "UA",
+    "rating": 8.2,
+    "synopsis": "After decades of service, a daring test pilot returns to train a new generation for an extraordinary mission.",
+    "cast": ["Tom Cruise", "Miles Teller", "Jennifer Connelly"],
+    "accent": "#4c8195",
+    "showtimes": [
+      { "id": "topgun-delhi-pvr-1345", "city": "Delhi", "cinema": "PVR Ambience Mall", "screen": "Audi 2 · IMAX", "time": "1:45 PM", "date": "Today", "price": 390 },
+      { "id": "topgun-bengaluru-inox-1800", "city": "Bengaluru", "cinema": "INOX Garuda Mall", "screen": "Screen 1", "time": "6:00 PM", "date": "Today", "price": 320 },
+      { "id": "topgun-hyderabad-pvr-2130", "city": "Hyderabad", "cinema": "PVR Inorbit", "screen": "Screen 5", "time": "9:30 PM", "date": "Tomorrow", "price": 360 }
+    ]
+  },
+  {
+    "id": "spirited-away",
+    "title": "Spirited Away",
+    "genre": "Animation · Fantasy",
+    "language": "Japanese",
+    "duration": "2h 5m",
+    "certificate": "U",
+    "rating": 8.6,
+    "synopsis": "A young girl discovers a mysterious spirit world and must find courage to help her parents return home.",
+    "cast": ["Rumi Hiiragi", "Miyu Irino", "Mari Natsuki"],
+    "accent": "#557e91",
+    "showtimes": [
+      { "id": "spirited-delhi-inox-1230", "city": "Delhi", "cinema": "INOX Vasant Kunj", "screen": "Screen 4", "time": "12:30 PM", "date": "Today", "price": 270 },
+      { "id": "spirited-chennai-pvr-1640", "city": "Chennai", "cinema": "PVR Ampa Skywalk", "screen": "Screen 6", "time": "4:40 PM", "date": "Today", "price": 290 },
+      { "id": "spirited-pune-inox-2000", "city": "Pune", "cinema": "INOX Bund Garden", "screen": "Screen 2", "time": "8:00 PM", "date": "Tomorrow", "price": 300 }
+    ]
+  },
+  {
+    "id": "ford-v-ferrari",
+    "title": "Ford v Ferrari",
+    "genre": "Drama · Sport",
+    "language": "English",
+    "duration": "2h 32m",
+    "certificate": "UA",
+    "rating": 8.1,
+    "synopsis": "An ambitious designer and fearless driver work against the odds to build a race car capable of challenging the world's best.",
+    "cast": ["Matt Damon", "Christian Bale", "Caitríona Balfe"],
+    "accent": "#a75e43",
+    "showtimes": [
+      { "id": "ford-delhi-pvr-1515", "city": "Delhi", "cinema": "PVR Pacific Mall", "screen": "Screen 6", "time": "3:15 PM", "date": "Today", "price": 280 },
+      { "id": "ford-mumbai-cine-1910", "city": "Mumbai", "cinema": "Cinepolis Andheri", "screen": "Audi 1", "time": "7:10 PM", "date": "Today", "price": 330 },
+      { "id": "ford-bengaluru-pvr-2045", "city": "Bengaluru", "cinema": "PVR Orion Mall", "screen": "Screen 4", "time": "8:45 PM", "date": "Tomorrow", "price": 310 }
+    ]
+  }
+]

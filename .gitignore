@@ -1,0 +1,6 @@
+.env
+backend/data/cinebook-store.json
+backend/data/cinebook-store.json.tmp
+backend/data/*.json
+backend/data/*.tmp
+backend/data/

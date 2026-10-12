@@ -1,0 +1,26 @@
+{
+  "name": "cinebook-backend",
+  "version": "1.0.0",
+  "description": "CineBook API gateway and local microservices",
+  "main": "server.js",
+  "scripts": {
+    "start": "node service-runner.js",
+    "dev": "node service-runner.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "cinebook",
+    "express",
+    "api",
+    "movies"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
