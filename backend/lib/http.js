@@ -28,4 +28,13 @@ function readPrincipal(req, res) {
   }
 }
 
-module.exports = { errorResponse, readPrincipal, requestJson };
+function startService(app, port, name, dependencies = []) {
+  Promise.all(dependencies)
+    .then(() => app.listen(port, '127.0.0.1', () => console.log(`${name} service listening on ${port}`)))
+    .catch((error) => {
+      console.error(`${name} service failed to start:`, error);
+      process.exit(1);
+    });
+}
+
+module.exports = { errorResponse, readPrincipal, requestJson, startService };

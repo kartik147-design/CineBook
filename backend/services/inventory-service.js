@@ -1,12 +1,12 @@
 const express = require('express');
 const crypto = require('node:crypto');
 const movies = require('../../frontend/src/data/movies.json');
-const { createJsonStore } = require('../lib/json-store');
-const { errorResponse } = require('../lib/http');
+const { createStore } = require('../lib/store');
+const { errorResponse, startService } = require('../lib/http');
 
 const app = express();
 const PORT = Number(process.env.INVENTORY_SERVICE_PORT || 5102);
-const store = createJsonStore('inventory.json', { holds: {}, bookings: {} });
+const store = createStore('inventory.json', { holds: {}, bookings: {} });
 const inventory = store.get();
 const validSeats = new Set(
   Array.from({ length: 8 }, (_, row) =>
@@ -25,19 +25,22 @@ function cleanExpiredHolds(showtimeId) {
   inventory.holds[showtimeId] = (inventory.holds[showtimeId] || []).filter((hold) => hold.expiresAt > now);
 }
 
-app.get('/health', (_req, res) => res.json({ status: 'healthy', service: 'inventory' }));
+app.get('/health', async (_req, res) => {
+  await store.health();
+  return res.json({ status: 'healthy', service: 'inventory' });
+});
 
-app.get('/availability/:showtimeId', (req, res) => {
+app.get('/availability/:showtimeId', async (req, res) => {
   const showtimeId = req.params.showtimeId;
   if (!knownShowtime(showtimeId)) return errorResponse(res, 404, 'Showtime was not found.');
   cleanExpiredHolds(showtimeId);
   const booked = inventory.bookings[showtimeId] || [];
   const held = (inventory.holds[showtimeId] || []).flatMap((hold) => hold.seats);
-  store.save();
+  await store.save();
   return res.json({ success: true, bookedSeats: [...new Set([...booked, ...held])] });
 });
 
-app.post('/internal/hold', (req, res) => {
+app.post('/internal/hold', async (req, res) => {
   const { showtimeId, seats } = req.body || {};
   if (!knownShowtime(showtimeId)) return errorResponse(res, 404, 'Showtime was not found.');
   if (!Array.isArray(seats) || seats.length < 1 || seats.length > 8 ||
@@ -57,11 +60,11 @@ app.post('/internal/hold', (req, res) => {
     expiresAt: Date.now() + 10 * 60 * 1000,
   };
   inventory.holds[showtimeId] = [...(inventory.holds[showtimeId] || []), hold];
-  store.save();
+  await store.save();
   return res.status(201).json({ success: true, holdToken: hold.token, expiresAt: hold.expiresAt });
 });
 
-app.post('/internal/commit', (req, res) => {
+app.post('/internal/commit', async (req, res) => {
   const { showtimeId, holdToken } = req.body || {};
   cleanExpiredHolds(showtimeId);
   const holds = inventory.holds[showtimeId] || [];
@@ -69,11 +72,11 @@ app.post('/internal/commit', (req, res) => {
   if (!hold) return errorResponse(res, 409, 'Seat hold expired. Please select your seats again.');
   inventory.bookings[showtimeId] = [...(inventory.bookings[showtimeId] || []), ...hold.seats];
   inventory.holds[showtimeId] = holds.filter((item) => item.token !== holdToken);
-  store.save();
+  await store.save();
   return res.json({ success: true, seats: hold.seats });
 });
 
-app.post('/internal/release', (req, res) => {
+app.post('/internal/release', async (req, res) => {
   const { showtimeId, holdToken, seats } = req.body || {};
   if (holdToken && Array.isArray(inventory.holds[showtimeId])) {
     inventory.holds[showtimeId] = inventory.holds[showtimeId].filter((hold) => hold.token !== holdToken);
@@ -81,7 +84,7 @@ app.post('/internal/release', (req, res) => {
   if (Array.isArray(seats) && Array.isArray(inventory.bookings[showtimeId])) {
     inventory.bookings[showtimeId] = inventory.bookings[showtimeId].filter((seat) => !seats.includes(seat));
   }
-  store.save();
+  await store.save();
   return res.json({ success: true });
 });
 
@@ -90,4 +93,4 @@ app.use((error, _req, res, _next) => {
   return errorResponse(res, 500, 'Seat inventory service failed.');
 });
 
-app.listen(PORT, '127.0.0.1', () => console.log(`inventory service listening on ${PORT}`));
+startService(app, PORT, 'inventory', [store.ready]);

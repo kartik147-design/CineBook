@@ -1,0 +1,70 @@
+name: cinebook-staging
+
+services:
+  mongo:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME:?Set MONGODB_ROOT_USERNAME in the staging environment}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:?Set MONGODB_ROOT_PASSWORD in the staging environment}
+    volumes:
+      - cinebook-staging-mongo:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mongosh --quiet --username "$$MONGO_INITDB_ROOT_USERNAME" --password "$$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "db.adminCommand('ping').ok"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: staging
+    environment:
+      PORT: 5001
+      NODE_ENV: production
+      CINEBOOK_DATA_DIR: /app/data
+      MONGODB_URI: mongodb://mongo:27017/cinebook
+      MONGODB_DATABASE: cinebook
+      MONGODB_USERNAME: ${MONGODB_ROOT_USERNAME:?Set MONGODB_ROOT_USERNAME in the staging environment}
+      MONGODB_PASSWORD: ${MONGODB_ROOT_PASSWORD:?Set MONGODB_ROOT_PASSWORD in the staging environment}
+      CINEBOOK_AUTH_SECRET: ${CINEBOOK_AUTH_SECRET:?Set CINEBOOK_AUTH_SECRET in the staging environment}
+      TICKET_SECRET: ${TICKET_SECRET:?Set TICKET_SECRET in the staging environment}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Set ADMIN_EMAIL in the staging environment}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in the staging environment}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - cinebook-staging-data:/app/data:ro
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:5001/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+    stop_grace_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: staging
+    ports:
+      - "${STAGING_PORT:-5000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  cinebook-staging-mongo:
+  cinebook-staging-data:

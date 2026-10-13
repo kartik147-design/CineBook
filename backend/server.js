@@ -5,7 +5,7 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const PORT = Number(process.env.PORT || 5000);
+const PORT = Number(process.env.PORT || 5001);
 const AUTH_URL = process.env.AUTH_SERVICE_URL || `http://127.0.0.1:${process.env.AUTH_SERVICE_PORT || 5101}`;
 const INVENTORY_URL = process.env.INVENTORY_SERVICE_URL || `http://127.0.0.1:${process.env.INVENTORY_SERVICE_PORT || 5102}`;
 const BOOKING_URL = process.env.BOOKING_SERVICE_URL || `http://127.0.0.1:${process.env.BOOKING_SERVICE_PORT || 5103}`;

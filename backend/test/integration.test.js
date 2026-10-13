@@ -5,9 +5,11 @@ const fs = require('node:fs');
 const net = require('node:net');
 const os = require('node:os');
 const path = require('node:path');
+const { MongoClient } = require('mongodb');
 const { after, before, test } = require('node:test');
 
 const temporaryData = fs.mkdtempSync(path.join(os.tmpdir(), 'cinebook-services-'));
+const testDatabase = `cinebook_test_${process.pid}`;
 const ports = {};
 let runner;
 let api;
@@ -54,6 +56,7 @@ before(async () => {
     TICKET_SECRET: crypto.randomBytes(32).toString('hex'),
     CINEBOOK_DATA_DIR: temporaryData,
   };
+  if (process.env.MONGODB_URI) env.MONGODB_DATABASE = testDatabase;
   runner = spawn(process.execPath, [path.join(__dirname, '..', 'server.js')], {
     cwd: path.join(__dirname, '..'),
     env,
@@ -84,6 +87,22 @@ after(async () => {
       new Promise((resolve) => runner.once('exit', resolve)),
       new Promise((resolve) => setTimeout(resolve, 4000)),
     ]);
+  }
+  if (process.env.MONGODB_URI) {
+    const client = new MongoClient(process.env.MONGODB_URI, {
+      ...(process.env.MONGODB_USERNAME
+        ? {
+            auth: {
+              username: process.env.MONGODB_USERNAME,
+              password: process.env.MONGODB_PASSWORD,
+            },
+            authSource: process.env.MONGODB_AUTH_SOURCE || 'admin',
+          }
+        : {}),
+    });
+    await client.connect();
+    await client.db(testDatabase).dropDatabase();
+    await client.close();
   }
   fs.rmSync(temporaryData, { recursive: true, force: true });
 });
@@ -198,4 +217,30 @@ test('demo checkout, seat locking, tickets, notifications, cancellations, and lo
   assert.equal(recommendations.status, 200);
   assert.equal(recommendations.body.algorithm, 'local-content-tfidf-cosine');
   assert.equal(recommendations.body.recommendations.some((item) => item.id === 'interstellar'), false);
+});
+
+test('MongoDB persists authentication and booking state when configured', {
+  skip: !process.env.MONGODB_URI,
+}, async () => {
+  const client = new MongoClient(process.env.MONGODB_URI, {
+    ...(process.env.MONGODB_USERNAME
+      ? {
+          auth: {
+            username: process.env.MONGODB_USERNAME,
+            password: process.env.MONGODB_PASSWORD,
+          },
+          authSource: process.env.MONGODB_AUTH_SOURCE || 'admin',
+        }
+      : {}),
+  });
+  try {
+    await client.connect();
+    const database = client.db(testDatabase);
+    const users = await database.collection('cinebook_users').findOne({ _id: 'state' });
+    const bookings = await database.collection('cinebook_bookings').findOne({ _id: 'state' });
+    assert.equal(users.data.users.length, 2);
+    assert.equal(bookings.data.bookings.length, 2);
+  } finally {
+    await client.close();
+  }
 });

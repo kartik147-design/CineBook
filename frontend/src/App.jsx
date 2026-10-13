@@ -12,7 +12,7 @@ import PaymentPage from './components/PaymentPage.jsx';
 import Recommendations from './components/Recommendations.jsx';
 import './App.css';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 async function request(path, { token, ...options } = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
