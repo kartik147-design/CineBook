@@ -1,26 +1,49 @@
 services:
+  mongo:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME:-cinebook}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-local-only-mongo-password}
+    volumes:
+      - cinebook-mongo:/data/db
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mongosh --quiet --username "$$MONGO_INITDB_ROOT_USERNAME" --password "$$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "db.adminCommand('ping').ok"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
+      target: staging
     environment:
-      PORT: 5000
+      PORT: 5001
       CINEBOOK_DATA_DIR: /app/data
+      MONGODB_URI: mongodb://mongo:27017/cinebook
+      MONGODB_DATABASE: cinebook
+      MONGODB_USERNAME: ${MONGODB_ROOT_USERNAME:-cinebook}
+      MONGODB_PASSWORD: ${MONGODB_ROOT_PASSWORD:-local-only-mongo-password}
       CINEBOOK_AUTH_SECRET: ${CINEBOOK_AUTH_SECRET:-local-development-only-change-this-secret}
       TICKET_SECRET: ${TICKET_SECRET:-local-development-ticket-secret-change-this}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@cinebook.local}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-this-admin-password}
-    ports:
-      - "5000:5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
     volumes:
-      - cinebook-data:/app/data
+      - cinebook-data:/app/data:ro
     restart: unless-stopped
     healthcheck:
       test:
         - CMD
         - node
         - -e
-        - "fetch('http://127.0.0.1:5000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+        - "fetch('http://127.0.0.1:5001/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
       interval: 10s
       timeout: 5s
       retries: 6
@@ -31,14 +54,13 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-      args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000/api}
     ports:
-      - "4173:4173"
+      - "${CINEBOOK_PORT:-5000}:80"
     depends_on:
       backend:
         condition: service_healthy
     restart: unless-stopped
 
 volumes:
+  cinebook-mongo:
   cinebook-data:

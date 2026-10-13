@@ -1,12 +1,12 @@
 const crypto = require('node:crypto');
 const { promisify } = require('node:util');
 const express = require('express');
-const { createJsonStore } = require('../lib/json-store');
-const { errorResponse } = require('../lib/http');
+const { createStore } = require('../lib/store');
+const { errorResponse, startService } = require('../lib/http');
 
 const app = express();
 const PORT = Number(process.env.AUTH_SERVICE_PORT || 5101);
-const store = createJsonStore('users.json', { users: [], revokedTokens: [] });
+const store = createStore('users.json', { users: [], revokedTokens: [] });
 const data = store.get();
 const scrypt = promisify(crypto.scrypt);
 const secret = process.env.CINEBOOK_AUTH_SECRET || 'local-development-only-change-this-secret';
@@ -67,7 +67,10 @@ function createAuthResponse(res, user, status = 200) {
   return res.status(status).json({ success: true, token, user: publicUser });
 }
 
-app.get('/health', (_req, res) => res.json({ status: 'healthy', service: 'auth' }));
+app.get('/health', async (_req, res) => {
+  await store.health();
+  return res.json({ status: 'healthy', service: 'auth' });
+});
 
 app.post('/auth/signup', async (req, res) => {
   const fullName = typeof req.body?.fullName === 'string' ? req.body.fullName.trim() : '';
@@ -94,8 +97,11 @@ app.post('/auth/signup', async (req, res) => {
   Object.assign(user, await hashPassword(password));
   user.passwordHash = user.hash;
   delete user.hash;
+  if (data.users.some((item) => item.email === email)) {
+    return errorResponse(res, 409, 'An account already exists for this email.');
+  }
   data.users.push(user);
-  store.save();
+  await store.save();
   return createAuthResponse(res, user, 201);
 });
 
@@ -138,11 +144,11 @@ app.get('/internal/admin/summary', (_req, res) => {
   return res.json({ success: true, users: data.users.length });
 });
 
-app.post('/internal/logout', (req, res) => {
+app.post('/internal/logout', async (req, res) => {
   const token = req.body?.token;
   if (typeof token === 'string' && verify(token)) {
     data.revokedTokens.push(token);
-    store.save();
+    await store.save();
   }
   return res.json({ success: true });
 });
@@ -152,7 +158,7 @@ app.use((error, _req, res, _next) => {
   return errorResponse(res, 500, 'Authentication service failed.');
 });
 
-app.listen(PORT, '127.0.0.1', () => console.log(`auth service listening on ${PORT}`));
+startService(app, PORT, 'auth', [store.ready]);
 
 function safeEqual(first, second) {
   const a = Buffer.from(first);

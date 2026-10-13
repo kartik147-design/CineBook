@@ -4,41 +4,79 @@ CineBook is a local-first movie booking demo built with React and independently 
 
 ## Run locally
 
-Start the backend services:
+The easiest way to run the complete development stack, including MongoDB, is Docker:
+
+```powershell
+docker compose -f docker-compose.dev.yml up --build
+```
+
+Open `http://localhost:5000`. The browser uses that one origin for both the app and `/api`; Vite proxies API requests to the private backend gateway. MongoDB is persisted in the `cinebook-dev-mongo` volume.
+
+By default, development uses the MongoDB container in Compose. To use MongoDB Atlas instead, put `MONGODB_URI` in the root `.env` file (use the replacement credentials after rotating any password shared in chat), then restart Compose. If the URI does not include credentials, also set `MONGODB_USERNAME` and `MONGODB_PASSWORD`. Keep `.env` private and do not commit it.
+
+For native development, run MongoDB locally, then start the backend services:
 
 ```powershell
 cd backend
-npm install
+npm ci
 Copy-Item .env.example .env
-# Edit .env and replace the example secrets before starting the app.
+# Set unique development secrets in backend/.env.
 npm start
 ```
 
-The runner starts the API gateway on port 5000 and the local services on 5101–5106. Keep this terminal running.
-
-In another terminal:
+In another terminal, start Vite on the shared browser-facing port:
 
 ```powershell
 cd frontend
-npm install
-npm run dev
+npm ci
+npm run dev -- --host 0.0.0.0 --port 5000
 ```
 
-The frontend uses `http://localhost:5000/api` by default. Set `VITE_API_URL` before starting Vite to use a different CineBook gateway URL.
+Open `http://localhost:5000`. Vite serves the UI and proxies `/api` to the backend gateway on its private upstream port 5001. Set `CINEBOOK_PROXY_TARGET` to change that upstream.
 
-## Run with Docker Compose
+## Docker environments
 
-From the repository root, build and start the frontend and backend containers:
+Docker Compose files at the repository root provide separate development, test, and staging setups. API requests use `/api`; Vite proxies them in development and Nginx proxies them in staging, so the browser uses one origin.
+
+### Development
 
 ```powershell
-docker compose up --build
+docker compose -f docker-compose.dev.yml up --build
 ```
 
-Open `http://localhost:4173`; the API gateway is available at `http://localhost:5000`. Compose persists account, booking, and notification JSON data in the `cinebook-data` volume. Set `ADMIN_PASSWORD`, `CINEBOOK_AUTH_SECRET`, and `TICKET_SECRET` in the shell or a root `.env` file before running Compose; the built-in values are for local development only. If the app is hosted at a different address, set `VITE_API_URL` to that browser-accessible gateway URL and rebuild.
+Open `http://localhost:5000`. The frontend has Vite hot reload; backend services restart when backend source files change. The frontend and API share this single public port; the backend gateway and MongoDB are available only to other Compose services. Development uses local-only demo credentials and a separate `cinebook-dev-mongo` volume.
+
+### Tests
+
+```powershell
+docker compose -f docker-compose.test.yml run --build --rm frontend-test
+docker compose -f docker-compose.test.yml run --build --rm backend-test
+```
+
+The frontend test image runs ESLint and a production build. The backend test image runs the end-to-end integration suite against its MongoDB service, including persistence checks. These commands return a nonzero exit code on failure.
+
+### Staging
+
+Copy [.env.example](./.env.example) to `.env.staging`, then set unique, strong values for the MongoDB root password, admin password, and both application secrets:
+
+```powershell
+Copy-Item .env.example .env.staging
+# Edit .env.staging before starting staging.
+docker compose -f docker-compose.staging.yml --env-file .env.staging up --build -d
+```
+
+Open `http://localhost:5000`; the UI and API share that single public port. Staging data persists in the `cinebook-staging-mongo` volume. Stop it with `docker compose -f docker-compose.staging.yml --env-file .env.staging down`. Changing the MongoDB credentials does not change the credentials inside an existing MongoDB volume; rotate them in MongoDB or migrate the data before changing the environment values.
+
+The simple root `docker-compose.yml` remains as a local single-machine convenience setup (`docker compose up --build`); its fallback credentials are for development only, not shared staging or production.
+
+### GitHub Actions
+
+- [CI](./.github/workflows/ci.yml) runs on pushes and pull requests: frontend lint/build, backend integration tests, Compose validation, and Docker image builds.
+- [Staging image publishing](./.github/workflows/staging.yml) runs on pushes to `main` and can be started manually. It publishes the frontend and backend staging images to GitHub Container Registry (`ghcr.io`) with `staging` and commit-SHA tags. It prepares images; deploying them to a staging host requires a hosting target and is not configured by this repository.
 
 ## Backend services
 
-- **API gateway** (`5000`): public HTTP API, authentication checks and internal service routing.
+- **API gateway** (`5001`, private upstream): HTTP API, authentication checks and internal service routing. The frontend proxy exposes the API on the same browser-facing port as the UI (`5000` by default).
 - **Auth** (`5101`): signup/login, salted password hashes, signed expiring sessions and admin sign-in.
 - **Seat inventory** (`5102`): seat holds, concurrent seat conflict checks, expiry and cancellation release.
 - **Booking/ticketing** (`5103`): checkout orchestration, booking history, signed ticket QR payloads and verification.
@@ -46,7 +84,7 @@ Open `http://localhost:4173`; the API gateway is available at `http://localhost:
 - **Recommendations** (`5105`): local recommendation scoring using TF-IDF genre/language/cast features and cosine similarity against favourites and watch history.
 - **Notifications** (`5106`): persistent in-app booking notification outbox; it does not send real email.
 
-The services use separate JSON stores in `backend/data/` for this single-machine demo. JSON files and temporary writes are git-ignored. This storage and the in-memory seat-hold model are not designed for multi-server production; use a transactional database and shared lock/queue system before deploying at scale.
+Auth, inventory, bookings, and notifications persist in separate MongoDB collections (`cinebook_users`, `cinebook_inventory`, `cinebook_bookings`, and `cinebook_notifications`) in the `cinebook` database. Docker environments require MongoDB and wait for it to become healthy before starting the backend. On first initialization, existing JSON store files are imported into MongoDB without overwriting an existing MongoDB collection; the old Compose data volumes are mounted read-only for this migration. Native development connects to the MongoDB URI in `backend/.env`; when `MONGODB_URI` is unset, the integration tests use isolated JSON files instead. Seat-hold and booking workflows still span services and are not a distributed transaction; add shared locking/transaction coordination before scaling beyond this demo deployment.
 
 ## Checkout and tickets
 

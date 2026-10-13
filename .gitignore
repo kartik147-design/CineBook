@@ -1,4 +1,7 @@
 .env
+.env.*
+!.env.example
+node_modules/
 backend/data/cinebook-store.json
 backend/data/cinebook-store.json.tmp
 backend/data/*.json

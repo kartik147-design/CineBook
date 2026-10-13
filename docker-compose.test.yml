@@ -1,0 +1,36 @@
+name: cinebook-test
+
+services:
+  mongo:
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: cinebook-test
+      MONGO_INITDB_ROOT_PASSWORD: test-only-mongo-password
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mongosh --quiet --username "$$MONGO_INITDB_ROOT_USERNAME" --password "$$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --eval "db.adminCommand('ping').ok"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  backend-test:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: test
+    environment:
+      NODE_ENV: test
+      MONGODB_URI: mongodb://mongo:27017/cinebook
+      MONGODB_USERNAME: cinebook-test
+      MONGODB_PASSWORD: test-only-mongo-password
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  frontend-test:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      target: test

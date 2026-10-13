@@ -1,8 +1,8 @@
 const crypto = require('node:crypto');
 const express = require('express');
 const movies = require('../../frontend/src/data/movies.json');
-const { createJsonStore } = require('../lib/json-store');
-const { errorResponse, readPrincipal, requestJson } = require('../lib/http');
+const { createStore } = require('../lib/store');
+const { errorResponse, readPrincipal, requestJson, startService } = require('../lib/http');
 
 const app = express();
 const PORT = Number(process.env.BOOKING_SERVICE_PORT || 5103);
@@ -10,7 +10,7 @@ const INVENTORY_URL = process.env.INVENTORY_SERVICE_URL || `http://127.0.0.1:${p
 const PAYMENT_URL = process.env.PAYMENT_SERVICE_URL || `http://127.0.0.1:${process.env.PAYMENT_SERVICE_PORT || 5104}`;
 const NOTIFICATION_URL = process.env.NOTIFICATION_SERVICE_URL || `http://127.0.0.1:${process.env.NOTIFICATION_SERVICE_PORT || 5106}`;
 const TICKET_SECRET = process.env.TICKET_SECRET || process.env.CINEBOOK_AUTH_SECRET || 'local-development-ticket-secret';
-const store = createJsonStore('bookings.json', { bookings: [] });
+const store = createStore('bookings.json', { bookings: [] });
 const data = store.get();
 
 app.use(express.json({ limit: '24kb' }));
@@ -46,7 +46,10 @@ async function releaseInventory(showtimeId, options) {
   });
 }
 
-app.get('/health', (_req, res) => res.json({ status: 'healthy', service: 'booking' }));
+app.get('/health', async (_req, res) => {
+  await store.health();
+  return res.json({ status: 'healthy', service: 'booking' });
+});
 
 app.get('/internal/bookings', (req, res) => {
   const user = readPrincipal(req, res);
@@ -120,7 +123,7 @@ app.post('/internal/bookings', async (req, res) => {
       return res.status(commitResult.status).json(commitResult.payload);
     }
     data.bookings.push(booking);
-    store.save();
+    await store.save();
   } catch (error) {
     data.bookings = data.bookings.filter((item) => item.id !== booking.id);
     await releaseInventory(showtimeId, { holdToken, seats });
@@ -160,7 +163,7 @@ app.delete('/internal/bookings/:bookingId', async (req, res) => {
   booking.status = 'cancelled';
   booking.ticketStatus = 'cancelled';
   booking.cancelledAt = new Date().toISOString();
-  store.save();
+  await store.save();
   return res.json({ success: true, booking });
 });
 
@@ -207,4 +210,4 @@ app.use((error, _req, res, _next) => {
   return errorResponse(res, 500, 'Booking service failed. Please try again.');
 });
 
-app.listen(PORT, '127.0.0.1', () => console.log(`booking service listening on ${PORT}`));
+startService(app, PORT, 'booking', [store.ready]);
